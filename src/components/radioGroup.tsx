@@ -3,63 +3,61 @@ import { View } from "react-native"
 import Radio from "./radio"
 
 const defaultSize = 20
-const defaultThickness = 1
-const defaultColor = '#007AFF'
+const defaultThickness = 3
+const defaultColor = "#DDD"
+const defaultActiveColor = '#1677FF'
+
+export interface RadioContextProps {
+  onChange?: (...args: any) => void
+  size?: number
+  thickness?: number
+  color?: string
+}
+
+export const RadioContext = React.createContext<any>(null)
 
 export interface RadioGroupProps {
-  selectedIndex: number
-  onSelect: (...args: any) => void
-  size: number
-  thickness: number
-  color: string
-  activeColor: string
-  highlightColor: string
-  style: object
-  children: React.ReactNode
+  activeKey?: number
+  onChange?: (...args: any) => void
+  size?: number
+  thickness?: number
+  color?: string
+  activeColor?: string
+  style?: object
+  children?: React.ReactNode
 }
 
 const RadioGroup: React.FC<RadioGroupProps> = ({
-  selectedIndex,
+  activeKey,
   size = defaultSize,
   thickness = defaultThickness,
   color = defaultColor,
-  activeColor,
-  highlightColor = null,
+  activeColor = defaultActiveColor,
   children,
   style,
-  onSelect
+  onChange
 }) => {
+  
+  const [index, setIndex] = React.useState<number>(activeKey || 0)
 
-  const [index, setIndex] = React.useState<number>(selectedIndex)
-
-  let prevSelected = selectedIndex
+  let prevSelected = activeKey
 
   const selectPress = (i: number, value: any) => {
     setIndex(i)
-    onSelect && onSelect(i, value)
-  }
-
-  const getChildContext = (): object => {
-    return {
-      onSelect: selectPress,
-      size,
-      thickness,
-      color,
-      highlightColor
-    }
+    onChange && onChange(i, value)
   }
 
   const RadioDom = (): React.ReactNode => {
     const template: React.ReactNode = React.Children.map(children, (radio: any, i: number) => {
-      let isSelected: boolean = index === i
-      let cc = isSelected && activeColor ? activeColor : color
+      let checked: boolean = index === i
       return (
         <Radio
-          color={cc}
-          activeColor={activeColor}
           {...radio.props}
           index={index}
-          isSelected={isSelected}
+          color={color}
+          activeColor={activeColor}
+          checked={checked}
+          onChange={() => selectPress(i, radio.value)}
         >
           {radio.props.children}
         </Radio>
@@ -70,15 +68,17 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
 
   React.useEffect(() => {
     if (index !== prevSelected) {
-      prevSelected = selectedIndex
-      setIndex(selectedIndex)
+      prevSelected = activeKey
+      setIndex(activeKey || 0)
     }
-  }, [selectedIndex])
+  }, [activeKey])
 
   return (
-    <View style={style}>
-      {RadioDom()}
-    </View>
+    <RadioContext.Provider value={{ size, thickness, color, activeColor }}>
+      <View style={style}>
+        {RadioDom()}
+      </View>
+    </RadioContext.Provider>
   )
 }
 

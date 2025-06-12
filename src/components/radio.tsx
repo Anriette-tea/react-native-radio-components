@@ -1,56 +1,56 @@
 import React from "react"
 import { View, TouchableWithoutFeedback, StyleSheet } from "react-native"
+import { RadioContext, RadioContextProps } from "./radioGroup"
 
-export const RadioContext = React.createContext<any>(null)
+const defaultColor = "#DDD"
+const defaultActiveColor = '#1677FF'
 
 export interface RadioProps {
-  isSelected?: boolean
+  checked?: boolean
   activeColor?: string
   disabled?: boolean
-  index: number
+  index?: number
   value?: any
   style?: object
   children?: React.ReactNode
   color?: string
-}
-
-export interface RadioContextProps {
-  onSelect?: (...args: any) => void
   size?: number
-  thickness?: number
-  color?: string
-  highlightColor?: string
+  onChange?: (...args: any) => void
 }
 
 const Radio: React.FC<RadioProps> = ({ 
   disabled, 
-  index, 
-  value, 
-  isSelected, 
-  activeColor, 
-  color, 
+  index,
+  value,
+  checked, 
+  activeColor = defaultActiveColor, 
+  color = defaultColor, 
   style, 
-  children 
+  children,
+  size,
+  onChange
 }) => {
 
   const context = React.useContext<RadioContextProps>(RadioContext)
 
   const getStyle = (): object => {
+    const client = size ? size : context.size
     return {
-      width: context.size,
-      height: context.size,
-      borderRadius: context.size && (context.size / 2),
+      width: client,
+      height: client,
+      borderRadius: client && client / 2,
       borderWidth: context.thickness,
-      borderColor: isSelected && activeColor ? activeColor : context.color
+      borderColor: checked && activeColor ? activeColor : color
     }
   }
 
   const getNotStyle = (): object => {
+    const client = size ? size : context.size
     return {
-      height: context.size && (context.size / 2),
-      width: context.size && (context.size / 2),
-      borderRadius: context.size && (context.size / 4),
-      backgroundColor: color || activeColor,
+      height: client && (client / 2),
+      width: client && (client / 2),
+      borderRadius: client && (client / 4),
+      backgroundColor: activeColor || color,
     }
   }
 
@@ -58,11 +58,11 @@ const Radio: React.FC<RadioProps> = ({
     <View style={{ opacity: disabled ? .4 : 1 }}>
       <TouchableWithoutFeedback
         disabled={disabled}
-        onPress={() => context.onSelect && context.onSelect(index, value)}
+        onPress={() => onChange && onChange(index, value)}
       >
-        <View style={[styles.container, style, isSelected ? { backgroundColor: context.highlightColor } : null]}>
+        <View style={[styles.container, style]}>
           <View style={[styles.radio, getStyle()]}>
-            {isSelected && <View style={getNotStyle()} />}
+            {checked && <View style={getNotStyle()} />}
           </View>
           <View style={styles.item}>
             {children}
