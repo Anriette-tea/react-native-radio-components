@@ -1,5 +1,5 @@
 {
-  "name": "react-native-radio-button-components",
+  "name": "react-native-radio-components",
   "version": "1.0.0",
   "main": "lib/index.js",
   "types": "dist/index.d.ts",
