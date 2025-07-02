@@ -1,5 +1,5 @@
-import Radio from "../lib/components/radio"
-import RadioGroup from "../lib/components/radioGroup"
+import Radio from "../lib/components/Radio"
+import RadioGroup from "../lib/components/RadioGroup"
 
 export {
   Radio,

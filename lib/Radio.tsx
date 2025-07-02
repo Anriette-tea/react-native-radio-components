@@ -1,6 +1,6 @@
 import React from "react"
 import { View, TouchableWithoutFeedback, StyleSheet } from "react-native"
-import { RadioContext, RadioContextProps } from "./radioGroup"
+import { RadioContext, RadioContextProps } from "./RadioGroup"
 
 const defaultColor = "#DDD"
 const defaultActiveColor = '#1677FF'

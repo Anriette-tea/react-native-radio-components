@@ -1,6 +1,6 @@
 import React from "react"
 import { View } from "react-native"
-import Radio from "./radio"
+import Radio from "./Radio"
 
 const defaultSize = 20
 const defaultThickness = 3
